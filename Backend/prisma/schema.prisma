@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String      @id @default(uuid())
+  githubId      BigInt      @unique
+  username      String
+  avatarUrl     String?
+  accessToken   String
+
+  currentStreak Int         @default(0)
+  longestStreak Int         @default(0)
+
+  activities    Activity[]
+  dailyStats    DailyStat[]
+
+  followers     Follow[]    @relation("followers")
+  following     Follow[]    @relation("following")
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Activity {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  repoName     String
+  activityDate DateTime
+
+  commitCount  Int      @default(0)
+  additions    Int      @default(0)
+  deletions    Int      @default(0)
+
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, repoName, activityDate])
+  @@index([userId, activityDate])
+}
+
+model DailyStat {
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  statDate      DateTime
+
+  totalCommits  Int      @default(0)
+  totalAdditions Int     @default(0)
+  totalDeletions Int     @default(0)
+
+  @@id([userId, statDate])
+  @@index([userId, statDate])
+}
+
+model Follow {
+  followerId  String
+  followingId String
+
+  follower    User @relation("followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId])
+}
