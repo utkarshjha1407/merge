@@ -7,9 +7,17 @@ const passport = require('./config/passport');
 
 const app = express();
 
+// Log CORS configuration
+const corsOrigin = 'http://localhost:3000'; // Force port 3000
+console.log('🔧 CORS Origin:', corsOrigin);
+console.log('🔧 ENV CORS_ORIGIN:', process.env.CORS_ORIGIN);
+
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: corsOrigin,
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));

@@ -20,31 +20,21 @@ router.get(
         { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
       );
 
-      // Redirect to frontend with token or return JSON
-      // For development, return JSON
-      res.json({ 
-        success: true,
-        token,
-        user: {
-          id: req.user.id,
-          username: req.user.username,
-          avatarUrl: req.user.avatarUrl,
-        }
-      });
+      // Redirect to frontend with token
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
     } catch (error) {
       console.error('Token generation error:', error);
-      res.status(500).json({ success: false, error: 'Failed to generate token' });
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/login?error=auth_failed`);
     }
   }
 );
 
 // Failure route
 router.get('/failure', (req, res) => {
-  res.status(401).json({ 
-    success: false, 
-    error: 'Authentication failed',
-    message: 'Please check your GitHub OAuth app settings and try again'
-  });
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  res.redirect(`${frontendUrl}/login?error=auth_failed`);
 });
 
 module.exports = router;
