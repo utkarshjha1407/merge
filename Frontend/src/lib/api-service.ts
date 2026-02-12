@@ -48,12 +48,12 @@ export const userService = {
 // GitHub Sync
 export const githubService = {
   syncActivity: async () => {
-    const { data } = await api.post<ApiResponse<{ synced: number }>>('/api/github/sync');
+    const { data } = await api.post<ApiResponse<{ fetched: number; saved: number; activities: any[] }>>('/api/github/sync');
     return data.data;
   },
   
   fetchCustomRange: async (days: number) => {
-    const { data } = await api.post<ApiResponse<{ synced: number }>>('/api/github/fetch', { days });
+    const { data } = await api.post<ApiResponse<{ fetched: number; saved: number; activities: any[] }>>('/api/github/fetch', { days });
     return data.data;
   },
 };

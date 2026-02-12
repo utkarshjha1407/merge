@@ -19,19 +19,22 @@ passport.use(
         });
 
         if (user) {
-          // Update access token
+          // Update access token for existing user
           user = await prisma.user.update({
             where: { githubId },
-            data: { accessToken },
+            data: { 
+              accessToken,
+            },
           });
         } else {
-          // Create new user
+          // Create new user with GitHub username as default
           user = await prisma.user.create({
             data: {
               githubId,
               username: profile.username,
               avatarUrl: profile.photos?.[0]?.value || null,
               accessToken,
+              hasCompletedProfile: false, // Will complete after first sync
             },
           });
         }

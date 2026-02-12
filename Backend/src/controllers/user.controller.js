@@ -16,6 +16,37 @@ const userController = {
     }
   },
 
+  // PUT /api/user/profile - Update user profile
+  updateProfile: async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const { username } = req.body;
+
+      if (!username || username.trim().length < 3) {
+        return res.status(400).json({
+          success: false,
+          error: 'Username must be at least 3 characters',
+        });
+      }
+
+      if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Username can only contain letters, numbers, hyphens, and underscores',
+        });
+      }
+
+      const updatedUser = await userService.updateUserProfile(userId, { username });
+      
+      res.json({
+        success: true,
+        data: updatedUser,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   // GET /api/user/dashboard - Get dashboard stats
   getDashboard: async (req, res, next) => {
     try {

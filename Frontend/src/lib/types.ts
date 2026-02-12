@@ -6,6 +6,7 @@ export interface User {
   username: string;
   avatarUrl: string;
   email?: string;
+  hasCompletedProfile?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -39,17 +40,30 @@ export interface StreakInfo {
 }
 
 export interface DashboardData {
-  user: User;
-  stats: {
+  user: {
+    username: string;
+    avatarUrl: string;
+    currentStreak: number;
+    longestStreak: number;
+  };
+  period: {
+    days: number;
+    activeDays: number;
+  };
+  totals: {
     totalCommits: number;
     totalAdditions: number;
     totalDeletions: number;
-    activeRepos: number;
-    avgCommitsPerDay: number;
   };
-  streak: StreakInfo;
-  recentActivities: Activity[];
-  heatmapData: DailyStat[];
+  averages: {
+    commitsPerDay: number;
+  };
+  dailyStats: Array<{
+    date: string;
+    commits: number;
+    additions: number;
+    deletions: number;
+  }>;
 }
 
 export interface LeaderboardEntry {

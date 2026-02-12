@@ -22,8 +22,33 @@ const userService = {
       followersCount: user._count.followers,
       followingCount: user._count.following,
       totalActivities: user._count.activities,
+      hasCompletedProfile: user.hasCompletedProfile || false,
       ...totalStats,
       createdAt: user.createdAt,
+    };
+  },
+
+  updateUserProfile: async (userId, data) => {
+    const { username } = data;
+
+    // Check if username is already taken
+    const existingUser = await userRepository.findByUsername(username);
+    if (existingUser && existingUser.id !== userId) {
+      throw new Error('Username is already taken');
+    }
+
+    // Update user
+    const updatedUser = await userRepository.updateUser(userId, {
+      username,
+      hasCompletedProfile: true,
+    });
+
+    return {
+      id: updatedUser.id,
+      username: updatedUser.username,
+      avatarUrl: updatedUser.avatarUrl,
+      hasCompletedProfile: updatedUser.hasCompletedProfile,
+      createdAt: updatedUser.createdAt,
     };
   },
 

@@ -10,6 +10,9 @@ router.use(authenticateJWT);
 // GET /api/user/me - Get current user profile
 router.get('/me', userController.getProfile);
 
+// PUT /api/user/profile - Update user profile
+router.put('/profile', userController.updateProfile);
+
 // GET /api/user/dashboard - Get dashboard stats with daily breakdown
 router.get('/dashboard', userController.getDashboard);
 
